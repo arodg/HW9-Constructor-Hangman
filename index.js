@@ -1,16 +1,22 @@
+// Take HW3 Hangman Game and refactor to work from command line using constructor functions with prototypes
+
 const inquirer = require("inquirer");
 const Letter = require('./letter.js');
 const Word = require('./word.js');
 
 function newGame() {
+	console.log("\nChristmas Hangman, see if you can guess the word!")
+
 	// Word constructor
 	var word = new Word();
 	var randomWord = word.randomWord;
-	console.log(randomWord);
 
-	// Letter constructor
-	var showLetter = new Letter();
-	var currentWord = showLetter.currentWord;
+	// Display only underscores for random word prior to start of game
+	var currentWord = [];
+	for(i = 0; i < randomWord.length; i+=1) {
+    	currentWord.push(" _ ");
+	}
+	console.log(currentWord.join(" ") + "\n");
 
 	var lettersGuessed = [];
 	var guessRemain = 5;
@@ -44,19 +50,22 @@ function newGame() {
 		// If userInput is not a correct guess, decrease guesses remain, display letters guessed, display word with underscores
 		if (randomWord.indexOf(letter) === -1) {
 			guessRemain--;
-			console.log("\n" + "INCORRECT!")
-			console.log("Guesses Remaining: " + guessRemain);
 			lettersGuessed.push(letter);
+			
+			// Letter constructor
+			var showLetter = new Letter(currentWord, randomWord, letter);
+			showLetter.incorrect();
+			
+			console.log("Guesses Remaining: " + guessRemain);
 			console.log("Incorrect Letters Guessed: " + lettersGuessed.join(" ") + "\n");
-			console.log(currentWord.join(" ") + "\n");
 		}
 		
 		// If userInput is correct, display current word with guessed letter
 		if (randomWord.indexOf(letter) !== -1) {
-			console.log("\n" + "Correct!" + "\n");
-			var b = randomWord.indexOf(letter);
-			currentWord.splice(b, 1, letter);
-			console.log(currentWord.join(" ") + "\n");
+			
+			// Letter constructor
+			var showLetter = new Letter(currentWord, randomWord, letter);
+			showLetter.correct();
 		}
 
 		// If no guesses remaining, end game
@@ -97,7 +106,6 @@ function playAgain() {
 
 
 newGame();
-
 
 
 
